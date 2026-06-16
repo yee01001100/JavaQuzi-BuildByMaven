@@ -1,0 +1,82 @@
+package com.yee.quiz.Controller;
+
+import java.util.List;
+import java.util.Scanner;
+import com.yee.quiz.model.*;
+import com.yee.quiz.service.*;
+
+public class QuizController{
+
+    private Scanner scanner;
+    private DataService dataService;
+    private QuizService quizService;
+    private User user;
+
+    public QuizController(){
+        this.scanner = new Scanner(System.in);
+        this.dataService = new DataService();
+        this.quizService = new QuizService();
+    }
+
+    public void StartMenu(){
+        System.out.print(
+                "##############################"+
+                "\n#      Java知识在线测试系统     #"+
+                "\n##############################\n"
+        );
+        System.out.print(
+                "1.用户登录"+
+                "\n2.用户注册"+
+                "\n3.退出系统\n>"
+        );
+    }
+
+    public void choice1(){
+        while(true){
+            StartMenu();
+            String choice = scanner.nextLine().trim();
+        }
+    }
+
+    private void handleLogin(){
+        System.out.println("\n--- 用户登录 ---");
+        System.out.print("请输入用户名："+"\n>");
+        String username = scanner.nextLine().trim();
+
+        System.out.print("请输入密码："+"\n>");
+        String password = scanner.nextLine().trim();
+
+        List<User> users = dataService.loadUsersFromJson();
+        for(User user : users){
+            if(user.getUsername().equals(username) && user.getPassword().equals(password)){
+                System.out.println("登录成功！用户："+username+"\n");
+                this.user = user;
+                break;
+            }
+        }
+        System.out.println("登录失败！用户不存在或密码错误！");
+    }
+    
+    private void handleRegister(){
+        System.out.println("\n--- 用户注册 ---");
+        System.out.print("请输入用户名："+"\n>");
+        String username = scanner.nextLine().trim();
+
+        if(dataService.isUsernameExist(username)){
+            System.out.println("用户已存在！请输入其它用户名！");
+            return;
+        }
+
+        System.out.print("请输入密码："+"\n>");
+        String password = scanner.nextLine().trim();
+        System.out.print("请再次确认密码："+"\n>");
+        String confirmPassword = scanner.nextLine().trim();
+        if(!password.equals(confirmPassword)){
+            System.out.println("两次输入的密码不一致!");
+            return;
+        }
+
+        dataService.registerUser(username, password);
+        System.out.println("注册成功！请登录。用户："+username+"\n");
+    }
+}
