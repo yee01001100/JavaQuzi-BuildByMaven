@@ -35,6 +35,21 @@ public class QuizController{
         while(true){
             StartMenu();
             String choice = scanner.nextLine().trim();
+
+            switch (choice){
+                case "1":
+                    handleLogin();
+                    break;
+                case "2":
+                    handleRegister();
+                    break;
+                case "3":
+                    System.out.println("感谢使用！");
+                    System.exit(0);
+                    break;
+                default:
+                    System.out.println("无效的选择！请重新输入！");
+            }
         }
     }
 
@@ -56,7 +71,7 @@ public class QuizController{
         }
         System.out.println("登录失败！用户不存在或密码错误！");
     }
-    
+
     private void handleRegister(){
         System.out.println("\n--- 用户注册 ---");
         System.out.print("请输入用户名："+"\n>");
@@ -78,5 +93,18 @@ public class QuizController{
 
         dataService.registerUser(username, password);
         System.out.println("注册成功！请登录。用户："+username+"\n");
+    }
+
+    private void showQuizMenu(){
+        System.out.print(
+                "##############################"+
+                "\n#            测试菜单          #"+
+                "\n##############################\n"
+        );
+        System.out.println("1.开始答题");
+        System.out.println("2.查看历史成绩");
+        System.out.println("3.返回上级菜单");
+        System.out.print(">");
+        String choice = scanner.nextLine().trim();
     }
 }

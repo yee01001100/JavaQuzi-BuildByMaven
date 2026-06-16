@@ -53,6 +53,25 @@ public class DataService {
         }
     }
 
+    //加载quizLog.json文件
+    public static List<QuizLog> loadQuizLogsFromJson(){
+        try{
+            ObjectMapper objectMapper = new ObjectMapper();
+            InputStream inputStream = Question.class.getClassLoader().getResourceAsStream("quizLog.json");
+
+            //处理quizLog.json文件缺失
+            if(inputStream == null){
+                throw new RuntimeException("无法找到quizLog.json文件");
+            }
+
+            List<QuizLog> quizLogs = objectMapper.readValue(inputStream, new TypeReference<List<QuizLog>>(){});
+            inputStream.close();
+            return quizLogs;
+        }catch (Exception e){
+            throw new RuntimeException("读取quizLog.json失败："+e.getMessage(),e);
+        }
+    }
+
     //判断用户是否存在
     public static boolean isUsernameExist(String username){
         for(User user : loadUsersFromJson()){
