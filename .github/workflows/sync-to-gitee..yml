@@ -1,0 +1,28 @@
+name: Sync GitHub to Gitee
+
+# 触发条件：当代码推送到 main 或 master 分支时触发
+on:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      # 步骤1：拉取 GitHub 仓库代码
+      - name: Checkout GitHub code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # 必须拉取所有历史记录，否则同步过去会丢失提交记录
+
+      # 步骤2：将代码镜像同步到 Gitee
+      - name: Sync to Gitee
+        uses: wearerequired/git-mirror-action@v1
+        env:
+          # 从 GitHub Secrets 中获取刚才配置的私钥
+          SSH_PRIVATE_KEY: ${{ secrets.GITEE_RSA_PRIVATE_KEY }}
+        with:
+          # ⚠️ 替换为你的 GitHub 仓库 SSH 地址
+          source-repo: "git@github.com:yee01001100/JavaQuzi-BuildByMaven.git"
+          # ⚠️ 替换为你的 Gitee 仓库 SSH 地址
+          destination-repo: "git@github.com:yee01001100/JavaQuzi-BuildByMaven.git"
