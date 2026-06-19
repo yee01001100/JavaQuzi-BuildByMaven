@@ -9,6 +9,10 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
+
+      - name: Fix Git Ownership
+        run: git config --global --add safe.directory /github/workspace
+
       # 步骤1：拉取 GitHub 仓库代码
       - name: Checkout GitHub code
         uses: actions/checkout@v4
