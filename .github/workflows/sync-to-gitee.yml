@@ -1,0 +1,28 @@
+﻿name: Sync GitHub to Gitee
+
+on:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout GitHub code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Add Gitee to known hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -t rsa gitee.com >> ~/.ssh/known_hosts
+
+      - name: Sync to Gitee
+        uses: wearerequired/git-mirror-action@v1
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.GITEE_RSA_PRIVATE_KEY }}
+        with:
+          source-repo: "https://github.com/yee01001100/JavaQuzi-BuildByMaven-.git"
+          destination-repo: "git@gitee.com:yee01001100/java-quzi-build-by-maven.git"
