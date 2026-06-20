@@ -17,14 +17,14 @@ jobs:
       - name: Setup SSH for Gitee
         run: |
           mkdir -p ~/.ssh
-          ssh-keyscan -t rsa gitee.com >> ~/.ssh/known_hosts
-          echo "${SSH_PRIVATE_KEY}" > ~/.ssh/gitee_key
-          chmod 600 ~/.ssh/gitee_key
+          ssh-keyscan gitee.com >> ~/.ssh/known_hosts
+          echo "${SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
         env:
           SSH_PRIVATE_KEY: ${{ secrets.GITEE_RSA_PRIVATE_KEY }}
 
-      - name: Force push all branches to Gitee
+      - name: Force push to Gitee
         run: |
           git remote add gitee git@gitee.com:yee01001100/java-quzi-build-by-maven.git
-          GIT_SSH_COMMAND="ssh -i ~/.ssh/gitee_key -o StrictHostKeyChecking=yes" git push --force --all gitee
-          GIT_SSH_COMMAND="ssh -i ~/.ssh/gitee_key -o StrictHostKeyChecking=yes" git push --force --tags gitee
+          git push --force --all gitee
+          git push --force --tags gitee
