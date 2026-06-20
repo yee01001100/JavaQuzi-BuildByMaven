@@ -23,8 +23,21 @@ jobs:
         env:
           SSH_PRIVATE_KEY: ${{ secrets.GITEE_RSA_PRIVATE_KEY }}
 
+      - name: Diagnostic info
+        run: |
+          echo "=== Local branches ==="
+          git branch -a
+          echo "=== Recent commits ==="
+          git log --oneline -5
+          echo "=== Remote branches on Gitee ==="
+          git ls-remote --heads git@gitee.com:yee01001100/java-quzi-build-by-maven.git
+
       - name: Force push to Gitee
         run: |
           git remote add gitee git@gitee.com:yee01001100/java-quzi-build-by-maven.git
+          echo "=== Pushing all branches ==="
           git push --force --all gitee
+          echo "=== Pushing all tags ==="
           git push --force --tags gitee
+          echo "=== Verify after push ==="
+          git ls-remote --heads gitee
