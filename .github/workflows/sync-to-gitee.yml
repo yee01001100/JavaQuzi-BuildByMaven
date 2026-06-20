@@ -1,4 +1,4 @@
-﻿name: Sync GitHub to Gitee
+name: Sync GitHub to Gitee
 
 on:
   push:
@@ -26,3 +26,4 @@ jobs:
         with:
           source-repo: "https://github.com/yee01001100/JavaQuzi-BuildByMaven.git"
           destination-repo: "git@gitee.com:yee01001100/java-quzi-build-by-maven.git"
+          args: "--force"
