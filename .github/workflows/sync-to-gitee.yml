@@ -17,27 +17,30 @@ jobs:
       - name: Setup SSH for Gitee
         run: |
           mkdir -p ~/.ssh
-          ssh-keyscan gitee.com >> ~/.ssh/known_hosts
+          ssh-keyscan gitee.com >> ~/.ssh/known_hosts 2>/dev/null
           echo "${SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
+          cat >> ~/.ssh/config << 'EOF'
+          Host gitee.com
+            StrictHostKeyChecking accept-new
+            ConnectTimeout 15
+            ServerAliveInterval 30
+          EOF
         env:
           SSH_PRIVATE_KEY: ${{ secrets.GITEE_RSA_PRIVATE_KEY }}
 
-      - name: Diagnostic info
-        run: |
-          echo "=== Local branches ==="
-          git branch -a
-          echo "=== Recent commits ==="
-          git log --oneline -5
-          echo "=== Remote branches on Gitee ==="
-          git ls-remote --heads git@gitee.com:yee01001100/java-quzi-build-by-maven.git
-
-      - name: Force push to Gitee
+      - name: Sync to Gitee (with retry)
         run: |
           git remote add gitee git@gitee.com:yee01001100/java-quzi-build-by-maven.git
-          echo "=== Pushing all branches ==="
-          git push --force --all gitee
-          echo "=== Pushing all tags ==="
-          git push --force --tags gitee
-          echo "=== Verify after push ==="
-          git ls-remote --heads gitee
+          for i in 1 2 3; do
+            echo "=== Attempt $i / 3 ==="
+            if git push --force --all gitee && git push --force --tags gitee; then
+              echo "=== Sync OK ==="
+              git ls-remote --heads gitee
+              exit 0
+            fi
+            echo "=== Retrying in 10s... ==="
+            sleep 10
+          done
+          echo "=== All 3 attempts failed ==="
+          exit 1
