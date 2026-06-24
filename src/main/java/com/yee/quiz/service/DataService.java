@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.UUID;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,7 +32,8 @@ public class DataService {
                 initializeDataFile("users.json", file);
             }
 
-            List<User> users = objectMapper.readValue(file, new TypeReference<List<User>>(){});
+            String content = new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8);
+            List<User> users = objectMapper.readValue(content, new TypeReference<List<User>>(){});
             return users;
         }catch (Exception e){
             throw new RuntimeException("读取users.json失败："+e.getMessage(),e);
@@ -47,7 +50,8 @@ public class DataService {
                 initializeDataFile("questions.json", file);
             }
 
-            List<Question> questions = objectMapper.readValue(file, new TypeReference<List<Question>>(){});
+            String content = new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8);
+            List<Question> questions = objectMapper.readValue(content, new TypeReference<List<Question>>(){});
             return questions;
         }catch (Exception e){
             throw new RuntimeException("读取questions.json失败："+e.getMessage(),e);
@@ -64,7 +68,8 @@ public class DataService {
                 initializeDataFile("quizLog.json", file);
             }
 
-            List<QuizLog> quizLogs = objectMapper.readValue(file, new TypeReference<List<QuizLog>>(){});
+            String content = new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8);
+            List<QuizLog> quizLogs = objectMapper.readValue(content, new TypeReference<List<QuizLog>>(){});
             return quizLogs;
         }catch (Exception e){
             throw new RuntimeException("读取quizLog.json失败："+e.getMessage(),e);
@@ -108,7 +113,7 @@ public class DataService {
                 file.createNewFile();
             }
             
-            FileWriter fileWriter = new FileWriter(file);
+            FileWriter fileWriter = new FileWriter(file, StandardCharsets.UTF_8);
             objectMapper.writerWithDefaultPrettyPrinter().writeValue(fileWriter, users);
             fileWriter.close();
         }catch (IOException e){
@@ -127,7 +132,7 @@ public class DataService {
                 file.createNewFile();
             }
             
-            FileWriter fileWriter = new FileWriter(file);
+            FileWriter fileWriter = new FileWriter(file, StandardCharsets.UTF_8);
             objectMapper.writerWithDefaultPrettyPrinter().writeValue(fileWriter, quizLogs);
             fileWriter.close();
         }catch (IOException e){
@@ -146,7 +151,7 @@ public class DataService {
                 file.createNewFile();
             }
 
-            FileWriter fileWriter = new FileWriter(file);
+            FileWriter fileWriter = new FileWriter(file, StandardCharsets.UTF_8);
             objectMapper.writerWithDefaultPrettyPrinter().writeValue(fileWriter, questions);
             fileWriter.close();
         }catch (IOException e){
@@ -205,7 +210,7 @@ public class DataService {
                 file.createNewFile();
             }
 
-            FileWriter fileWriter = new FileWriter(file);
+            FileWriter fileWriter = new FileWriter(file, StandardCharsets.UTF_8);
             objectMapper.writerWithDefaultPrettyPrinter().writeValue(fileWriter, config);
             fileWriter.close();
         } catch (IOException e) {
